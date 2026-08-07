@@ -2,20 +2,29 @@ pipeline {
 
     agent any
 
-   stages {
+    environment {
+        APP_NAME = "DevOps-Demo"
+        ENVIRONMENT = "DEV"
+        VERSION = "1.0"
+    }
 
-    stage('Build') {
+    stages {
 
-        steps {
+        stage('Build') {
+            steps {
+                echo "Application: ${APP_NAME}"
+                echo "Environment: ${ENVIRONMENT}"
+                echo "Version: ${VERSION}"
 
-            echo 'Building Application'
-
+                sh '''
+                    echo "Application = $APP_NAME"
+                    echo "Environment = $ENVIRONMENT"
+                    echo "Version = $VERSION"
+                '''
+            }
         }
 
     }
 
 }
-
-}
-
 
