@@ -2,31 +2,20 @@ pipeline {
 
     agent any
 
-    stages {
+   stages {
 
-        stage('Checkout') {
-            steps {
-                echo 'Checking Source Code'
-            }
-        }
+    stage('Build') {
 
-        stage('Build') {
-            steps {
-                sh 'echo Building Application'
-            }
-        }
+        steps {
 
-        stage('Test') {
-            steps {
-                sh 'echo Running Tests'
-            }
-        }
+            echo 'Building Application'
 
-        stage('Deploy') {
-            steps {
-                sh 'echo Deploying Application'
-            }
         }
 
     }
+
 }
+
+}
+
+
