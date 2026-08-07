@@ -17,6 +17,7 @@ pipeline {
     stages {
 
         stage('Build') {
+
             steps {
 
                 echo "Application: ${APP_NAME}"
@@ -30,7 +31,5 @@ pipeline {
                 '''
             }
         }
-
     }
-
 }
