@@ -32,4 +32,23 @@ pipeline {
             }
         }
     }
+    post {
+
+        always {
+            echo "Pipeline execution completed."
+        }
+
+        success {
+            echo "Build completed successfully!"
+        }
+
+        failure {
+            echo "Build failed!"
+        }
+
+        cleanup {
+            echo "Cleaning workspace..."
+        }
+
+    }
 }
