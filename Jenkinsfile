@@ -2,6 +2,12 @@ pipeline {
 
     agent any
 
+    options {
+        timestamps()
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+
     environment {
         APP_NAME = "DevOps-Demo"
         ENVIRONMENT = "DEV"
@@ -12,6 +18,7 @@ pipeline {
 
         stage('Build') {
             steps {
+
                 echo "Application: ${APP_NAME}"
                 echo "Environment: ${ENVIRONMENT}"
                 echo "Version: ${VERSION}"
@@ -27,4 +34,3 @@ pipeline {
     }
 
 }
-
