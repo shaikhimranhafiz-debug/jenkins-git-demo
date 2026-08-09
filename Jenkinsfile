@@ -43,9 +43,9 @@ pipeline {
                 echo "Deploy requested: ${params.DEPLOY}"
 
                 sh '''
-                    echo "Application = $APP_NAME"
-                    echo "Environment = $ENVIRONMENT"
-                    echo "Version = $VERSION"
+                    echo "Application = ${env.APP_NAME}"
+                    echo "Environment = ${parm.ENVIRONMENT}"
+                    echo "Version = ${params.VERSION}"
                 '''
             }
         }
@@ -53,7 +53,7 @@ pipeline {
         stage('Deploy') {
             when {
                 expression {
-                    env.GIT_BRANCH == 'origin/main'
+                    params.deploy
                 }
             }
 
