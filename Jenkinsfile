@@ -33,23 +33,26 @@ pipeline {
         )
     }
 
-    stages {
+stage('Build') {
+    steps {
 
-        stage('Build') {
-            steps {
-                echo "Application: ${env.APP_NAME}"
-                echo "Environment: ${params.ENVIRONMENT}"
-                echo "Version: ${params.VERSION}"
-                echo "Deploy requested: ${params.DEPLOY}"
+        echo "Application: ${env.APP_NAME}"
+        echo "Environment: ${params.ENVIRONMENT}"
+        echo "Version: ${params.VERSION}"
+        echo "Deploy requested: ${params.DEPLOY}"
 
-                sh '''
-                    echo "Application = ${env.APP_NAME}"
-                    echo "Environment = ${parm.ENVIRONMENT}"
-                    echo "Version = ${params.VERSION}"
-                '''
-            }
+        withEnv([
+            "APP_VERSION=${params.VERSION}",
+            "APP_ENVIRONMENT=${params.ENVIRONMENT}"
+        ]) {
+            sh '''
+                echo "Application = $APP_NAME"
+                echo "Environment = $APP_ENVIRONMENT"
+                echo "Version = $APP_VERSION"
+            '''
         }
-
+    }
+}
         stage('Deploy') {
             when {
                 expression {
