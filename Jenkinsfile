@@ -36,7 +36,7 @@ pipeline {
                 expression {
 			env.GIT_BRANCH == 'origin/main'
             }
-
+	}
             steps {
                 echo "Deploying application..."
                 sh 'echo Deploying to production'
