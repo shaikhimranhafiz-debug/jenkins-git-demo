@@ -4,6 +4,8 @@ pipeline {
 
     environment {
         APP_NAME = 'DevOps-Demo'
+        BUILD_DIR = 'build'
+        ARTIFACT_NAME = 'application.tar.gz'
     }
 
     options {
@@ -23,38 +25,83 @@ pipeline {
         choice(
             name: 'ENVIRONMENT',
             choices: ['DEV', 'QA', 'PROD'],
-            description: 'Select deployment environment'
+            description: 'Target environment'
         )
 
         booleanParam(
             name: 'DEPLOY',
             defaultValue: false,
-            description: 'Deploy the application'
+            description: 'Deploy application'
         )
     }
 
     stages {
 
+        stage('Checkout') {
+
+            steps {
+                echo "Source code checked out from GitHub"
+            }
+        }
+
         stage('Build') {
 
             steps {
 
-                echo "Application: ${env.APP_NAME}"
-                echo "Environment: ${params.ENVIRONMENT}"
+                echo "Building ${env.APP_NAME}"
                 echo "Version: ${params.VERSION}"
-                echo "Deploy requested: ${params.DEPLOY}"
+                echo "Environment: ${params.ENVIRONMENT}"
 
-                withEnv([
-                    "APP_VERSION=${params.VERSION}",
-                    "APP_ENVIRONMENT=${params.ENVIRONMENT}"
-                ]) {
+                sh '''
+                    chmod +x app.sh
+                    ./app.sh
+                '''
+            }
+        }
 
-                    sh '''
-                        echo "Application = $APP_NAME"
-                        echo "Environment = $APP_ENVIRONMENT"
-                        echo "Version = $APP_VERSION"
-                    '''
-                }
+        stage('Test') {
+
+            steps {
+
+                echo "Running application tests..."
+
+                sh '''
+                    echo "Running tests..."
+                    test -f app.sh
+                    echo "Tests passed"
+                '''
+            }
+        }
+
+        stage('Package') {
+
+            steps {
+
+                echo "Creating application package..."
+
+                sh '''
+                    rm -rf "$BUILD_DIR"
+                    mkdir -p "$BUILD_DIR"
+
+                    cp app.sh "$BUILD_DIR/"
+
+                    tar -czf "$BUILD_DIR/$ARTIFACT_NAME" \
+                        -C "$BUILD_DIR" app.sh
+
+                    echo "Package created:"
+                    ls -lh "$BUILD_DIR/$ARTIFACT_NAME"
+                '''
+            }
+        }
+
+        stage('Archive') {
+
+            steps {
+
+                echo "Archiving build artifact..."
+
+                archiveArtifacts artifacts: 'build/application.tar.gz',
+                                 fingerprint: true
             }
         }
 
@@ -68,12 +115,13 @@ pipeline {
 
             steps {
 
-                echo "Deploying application..."
+                echo "Deployment requested"
+                echo "Environment: ${params.ENVIRONMENT}"
+                echo "Version: ${params.VERSION}"
 
                 sh '''
-                    echo "Deploying application"
-                    echo "Environment = $APP_ENVIRONMENT"
-                    echo "Version = $APP_VERSION"
+                    echo "Deployment simulation"
+                    echo "Deploying ${APP_NAME}"
                 '''
             }
         }
@@ -86,15 +134,15 @@ pipeline {
         }
 
         success {
-            echo "Build completed successfully!"
+            echo "Pipeline completed successfully."
         }
 
         failure {
-            echo "Build failed!"
+            echo "Pipeline failed."
         }
 
         cleanup {
-            echo "Cleaning workspace..."
+            echo "Performing cleanup actions."
         }
     }
 }
