@@ -33,36 +33,48 @@ pipeline {
         )
     }
 
-stage('Build') {
-    steps {
+    stages {
 
-        echo "Application: ${env.APP_NAME}"
-        echo "Environment: ${params.ENVIRONMENT}"
-        echo "Version: ${params.VERSION}"
-        echo "Deploy requested: ${params.DEPLOY}"
+        stage('Build') {
 
-        withEnv([
-            "APP_VERSION=${params.VERSION}",
-            "APP_ENVIRONMENT=${params.ENVIRONMENT}"
-        ]) {
-            sh '''
-                echo "Application = $APP_NAME"
-                echo "Environment = $APP_ENVIRONMENT"
-                echo "Version = $APP_VERSION"
-            '''
+            steps {
+
+                echo "Application: ${env.APP_NAME}"
+                echo "Environment: ${params.ENVIRONMENT}"
+                echo "Version: ${params.VERSION}"
+                echo "Deploy requested: ${params.DEPLOY}"
+
+                withEnv([
+                    "APP_VERSION=${params.VERSION}",
+                    "APP_ENVIRONMENT=${params.ENVIRONMENT}"
+                ]) {
+
+                    sh '''
+                        echo "Application = $APP_NAME"
+                        echo "Environment = $APP_ENVIRONMENT"
+                        echo "Version = $APP_VERSION"
+                    '''
+                }
+            }
         }
-    }
-}
+
         stage('Deploy') {
+
             when {
                 expression {
-                    params.deploy
+                    params.DEPLOY
                 }
             }
 
             steps {
+
                 echo "Deploying application..."
-                sh 'echo Deploying to production'
+
+                sh '''
+                    echo "Deploying application"
+                    echo "Environment = $APP_ENVIRONMENT"
+                    echo "Version = $APP_VERSION"
+                '''
             }
         }
     }
@@ -85,5 +97,4 @@ stage('Build') {
             echo "Cleaning workspace..."
         }
     }
-}
 }
