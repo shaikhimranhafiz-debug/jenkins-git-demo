@@ -2,27 +2,25 @@ pipeline {
 
     agent any
 
+    environment {
+        APP_NAME = 'DevOps-Demo'
+        ENVIRONMENT = 'DEV'
+        VERSION = '1.0'
+    }
+
     options {
         timestamps()
         disableConcurrentBuilds()
         buildDiscarder(logRotator(numToKeepStr: '10'))
     }
 
-    environment {
-        APP_NAME = "DevOps-Demo"
-        ENVIRONMENT = "DEV"
-        VERSION = "1.0"
-    }
-
     stages {
 
         stage('Build') {
-
             steps {
-
-                echo "Application: ${APP_NAME}"
-                echo "Environment: ${ENVIRONMENT}"
-                echo "Version: ${VERSION}"
+                echo "Application: $APP_NAME"
+                echo "Environment: $ENVIRONMENT"
+                echo "Version: $VERSION"
 
                 sh '''
                     echo "Application = $APP_NAME"
@@ -31,7 +29,20 @@ pipeline {
                 '''
             }
         }
+
+        stage('Deploy') {
+
+            when {
+                branch 'main'
+            }
+
+            steps {
+                echo "Deploying application..."
+                sh 'echo Deploying to production'
+            }
+        }
     }
+
     post {
 
         always {
@@ -49,6 +60,5 @@ pipeline {
         cleanup {
             echo "Cleaning workspace..."
         }
-
     }
 }
