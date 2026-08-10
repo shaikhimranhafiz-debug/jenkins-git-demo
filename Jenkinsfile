@@ -8,6 +8,7 @@ pipeline {
         APP_NAME = 'DevOps-Demo'
         BUILD_DIR = 'build'
         ARTIFACT_NAME = 'application.tar.gz'
+	LAB_SECRET = credentials('demo-secret')
     }
 
     options {
@@ -53,7 +54,7 @@ pipeline {
                 echo "Building ${env.APP_NAME}"
                 echo "Version: ${params.VERSION}"
                 echo "Environment: ${params.ENVIRONMENT}"
-
+		echo "Credential successfully loaded: ${env.LAB_SECRET ? 'YES' : 'NO'}"
                 sh '''
                     chmod +x app.sh
                     ./app.sh
