@@ -134,6 +134,16 @@ pipeline {
                 echo "Environment: ${params.ENVIRONMENT}"
                 echo "Version: ${params.VERSION}"
 
+                script {
+                    if (params.ENVIRONMENT == 'PROD') {
+
+                        input(
+                            message: "Approve deployment to PRODUCTION?",
+                            ok: "Approve Deployment"
+                        )
+                    }
+                }
+
                 sh '''
                     echo "Deployment simulation"
                     echo "Deploying ${APP_NAME}"
