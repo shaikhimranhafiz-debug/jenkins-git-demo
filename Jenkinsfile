@@ -1,7 +1,9 @@
 pipeline {
 
     agent any
-
+    triggers {
+        cron('H * * * *')
+    }
     environment {
         APP_NAME = 'DevOps-Demo'
         BUILD_DIR = 'build'
