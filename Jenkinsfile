@@ -1,14 +1,12 @@
 pipeline {
 
     agent any
-    triggers {
-        cron('H * * * *')
-    }
+
     environment {
         APP_NAME = 'DevOps-Demo'
         BUILD_DIR = 'build'
         ARTIFACT_NAME = 'application.tar.gz'
-	LAB_SECRET = credentials('demo-secret')
+        LAB_SECRET = credentials('demo-secret')
     }
 
     options {
@@ -54,7 +52,21 @@ pipeline {
                 echo "Building ${env.APP_NAME}"
                 echo "Version: ${params.VERSION}"
                 echo "Environment: ${params.ENVIRONMENT}"
-		echo "Credential successfully loaded: ${env.LAB_SECRET ? 'YES' : 'NO'}"
+                echo "Credential successfully loaded: ${env.LAB_SECRET ? 'YES' : 'NO'}"
+
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'lab-username-password',
+                        usernameVariable: 'LAB_USER',
+                        passwordVariable: 'LAB_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                        echo "Username credential loaded: $LAB_USER"
+                        echo "Password credential loaded: YES"
+                    '''
+                }
+
                 sh '''
                     chmod +x app.sh
                     ./app.sh
