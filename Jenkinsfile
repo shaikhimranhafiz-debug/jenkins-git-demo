@@ -56,7 +56,7 @@ pipeline {
 		echo "Jenkins Build Number: ${env.BUILD_NUMBER}"
 		echo "Jenkins Job Name: ${env.JOB_NAME}"
 		echo "Jenkins Build Tag: ${env.BUILD_TAG}"
-		echo "Git Commit: ${env.GIT_COMMIT}
+		echo "Git Commit: ${env.GIT_COMMIT}"
 "
                 withCredentials([
                     usernamePassword(
