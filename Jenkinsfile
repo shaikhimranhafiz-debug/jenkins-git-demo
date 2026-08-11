@@ -7,6 +7,7 @@ pipeline {
         BUILD_DIR = 'build'
         ARTIFACT_NAME = 'application.tar.gz'
         LAB_SECRET = credentials('demo-secret')
+	IMAGE_NAME = 'devops-demo'
     }
 
     options {
@@ -75,6 +76,15 @@ pipeline {
                     chmod +x app.sh
                     ./app.sh
                 '''
+		sh '''
+			SHORT_SHA=$(echo "$GIT_COMMIT" | cut -c1-7)
+			echo "Building Docker image..."
+			docker build -t "$IMAGE_NAME:build-$BUILD_NUMBER" .
+			docker tag "$IMAGE_NAME:build-$BUILD_NUMBER" "$IMAGE_NAME:$SHORT_SHA"
+
+			echo "Docker images created:"
+			docker images "$IMAGE_NAME"
+		'''
             }
         }
 
