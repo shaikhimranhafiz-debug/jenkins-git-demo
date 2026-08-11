@@ -53,7 +53,11 @@ pipeline {
                 echo "Version: ${params.VERSION}"
                 echo "Environment: ${params.ENVIRONMENT}"
                 echo "Credential successfully loaded: ${env.LAB_SECRET ? 'YES' : 'NO'}"
-
+		echo "Jenkins Build Number: ${env.BUILD_NUMBER}"
+		echo "Jenkins Job Name: ${env.JOB_NAME}"
+		echo "Jenkins Build Tag: ${env.BUILD_TAG}"
+		echo "Git Commit: ${env.GIT_COMMIT}
+"
                 withCredentials([
                     usernamePassword(
                         credentialsId: 'lab-username-password',
