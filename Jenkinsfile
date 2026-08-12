@@ -88,6 +88,36 @@ pipeline {
             }
         }
 
+	stage('Push Image to Artifact Registry') {
+    		steps {
+        	withCredentials([
+            	usernamePassword(
+                	credentialsId: 'artifact-registry-token',
+                	usernameVariable: 'AR_USERNAME',
+                	passwordVariable: 'AR_TOKEN'
+            	)	
+        	]) {
+            	sh '''
+                	set -e
+
+                	REGISTRY="asia-south1-docker.pkg.dev"
+                	IMAGE="${REGISTRY}/project-36084be0-9014-46a8-a6b/cicd-images/devops-demo:01ecd87"
+
+                	echo "$AR_TOKEN" | docker login "$REGISTRY" \
+                    	--username "$AR_USERNAME" \
+                    	--password-stdin
+
+                	docker tag devops-demo:01ecd87 "$IMAGE"
+
+                	docker push "$IMAGE"
+
+                	docker logout "$REGISTRY"
+            	'''
+        	}	
+    	}
+	}
+
+
         stage('Test') {
 
             steps {
